@@ -3,13 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Control Financiero</title>
     <style>
+        /* RESET MEJORADO */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
         }
 
         body {
@@ -17,7 +27,8 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 10px;
-            padding-bottom: 20px;
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+            line-height: 1.4;
         }
 
         .container {
@@ -39,7 +50,7 @@
         }
 
         .header h1 {
-            font-size: 1.8em;
+            font-size: clamp(1.3em, 5vw, 1.8em);
             margin-bottom: 15px;
             font-weight: 700;
         }
@@ -53,7 +64,7 @@
         }
 
         .total-amount {
-            font-size: 2.5em;
+            font-size: clamp(1.8em, 8vw, 2.5em);
             font-weight: bold;
         }
 
@@ -70,22 +81,23 @@
             margin-bottom: 15px;
             border-bottom: 2px solid #4CAF50;
             padding-bottom: 12px;
-            font-size: 1.3em;
+            font-size: clamp(1.1em, 4vw, 1.3em);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            gap: 10px;
         }
 
         .total-gastos {
-            font-size: 1.2em;
+            font-size: clamp(1em, 4vw, 1.2em);
             color: #f44336;
             font-weight: bold;
         }
 
         .cuentas-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 12px;
             margin-bottom: 20px;
         }
@@ -97,70 +109,60 @@
             padding: 15px;
             position: relative;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-        }
-
-        .cuenta-card:active {
-            transform: scale(0.98);
         }
 
         .cuenta-card h3 {
             color: #2E7D32;
             margin-bottom: 10px;
-            font-size: 1.1em;
+            font-size: clamp(0.9em, 3vw, 1.1em);
         }
 
         .cuenta-saldo {
-            font-size: 1.6em;
+            font-size: clamp(1.2em, 5vw, 1.6em);
             font-weight: bold;
             color: #333;
         }
 
         .btn-delete-cuenta {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 8px;
+            right: 8px;
             background: #f44336;
             color: white;
             border: none;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             cursor: pointer;
-            font-size: 0.9em;
+            font-size: 0.8em;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            z-index: 10;
         }
 
         .btn {
-            padding: 14px 20px;
+            padding: 14px 18px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 1em;
-            transition: all 0.3s;
-            margin: 8px 5px;
-            min-height: 50px;
+            font-size: clamp(0.9em, 3.5vw, 1em);
+            transition: all 0.2s;
+            margin: 5px;
+            min-height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-        }
-
-        .btn:active {
-            transform: translateY(2px);
+            gap: 6px;
+            flex: 1;
+            min-width: 120px;
         }
 
         .btn-primary {
             background: #4CAF50;
             color: white;
-        }
-
-        .btn-primary:hover, .btn-primary:active {
-            background: #45a049;
         }
 
         .btn-danger {
@@ -171,13 +173,6 @@
         .btn-secondary {
             background: #2196F3;
             color: white;
-        }
-
-        .btn-success {
-            background: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            font-size: 0.9em;
         }
 
         .btn-export {
@@ -202,7 +197,6 @@
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 12px;
-            transition: all 0.3s;
         }
 
         .gasto-item.pagado {
@@ -213,7 +207,7 @@
         .gasto-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 12px;
             flex-wrap: wrap;
             gap: 12px;
@@ -221,65 +215,62 @@
 
         .gasto-info {
             flex: 1;
-            min-width: 160px;
+            min-width: 0;
         }
 
         .gasto-nombre {
             font-weight: bold;
-            font-size: 1.1em;
+            font-size: clamp(1em, 3.5vw, 1.1em);
             color: #333;
             margin-bottom: 5px;
+            word-break: break-word;
         }
 
         .gasto-monto {
-            font-size: 1.3em;
+            font-size: clamp(1.1em, 4vw, 1.3em);
             color: #2E7D32;
             font-weight: bold;
         }
 
         .gasto-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
             flex-wrap: wrap;
         }
 
         .status-badge {
-            padding: 8px 15px;
+            padding: 8px 12px;
             border-radius: 20px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9em;
-            min-width: 100px;
+            font-size: clamp(0.8em, 3vw, 0.9em);
+            min-width: 80px;
             text-align: center;
-        }
-
-        .status-badge:active {
-            transform: scale(0.95);
+            border: 2px solid transparent;
         }
 
         .status-pendiente {
             background: #fff3cd;
             color: #856404;
-            border: 2px solid #ffc107;
+            border-color: #ffc107;
         }
 
         .status-pagado-badge {
             background: #d4edda;
             color: #155724;
-            border: 2px solid #28a745;
+            border-color: #28a745;
         }
 
         .gasto-cuenta {
-            font-size: 0.9em;
+            font-size: clamp(0.8em, 2.5vw, 0.9em);
             color: #666;
             font-style: italic;
             margin-top: 5px;
         }
 
         .debitos-list {
-            max-height: 50vh;
+            max-height: 40vh;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
@@ -294,7 +285,7 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
         }
 
         .debito-item.pago {
@@ -304,26 +295,27 @@
 
         .debito-info {
             flex: 1;
-            min-width: 220px;
+            min-width: 0;
         }
 
         .debito-fecha {
-            font-size: 0.85em;
+            font-size: clamp(0.75em, 2.5vw, 0.85em);
             color: #666;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .debito-descripcion {
             font-weight: bold;
             color: #333;
-            font-size: 1em;
-            line-height: 1.3;
+            font-size: clamp(0.85em, 3vw, 1em);
+            word-break: break-word;
         }
 
         .debito-monto {
-            font-size: 1.2em;
+            font-size: clamp(1em, 4vw, 1.2em);
             font-weight: bold;
             color: #f44336;
+            flex-shrink: 0;
         }
 
         .debito-monto.pago {
@@ -345,10 +337,11 @@
 
         .modal-content {
             background: white;
+            width: 95%;
             max-width: 500px;
             margin: 20px auto;
             border-radius: 15px;
-            padding: 25px;
+            padding: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
@@ -362,17 +355,22 @@
         }
 
         .modal-header h3 {
-            font-size: 1.4em;
+            font-size: clamp(1.1em, 4vw, 1.4em);
             color: #333;
             font-weight: 600;
         }
 
         .close {
-            font-size: 32px;
+            font-size: 28px;
             cursor: pointer;
             color: #999;
             line-height: 1;
             padding: 5px;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .form-group {
@@ -384,27 +382,21 @@
             margin-bottom: 8px;
             font-weight: bold;
             color: #333;
-            font-size: 1em;
+            font-size: clamp(0.9em, 3.5vw, 1em);
         }
 
         .form-group input, .form-group select {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             border: 2px solid #ddd;
             border-radius: 8px;
-            font-size: 1.1em;
+            font-size: 16px; /* Previene zoom en iOS */
             background: #fff;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
         }
 
         .modal-actions {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             justify-content: flex-end;
             margin-top: 25px;
             flex-wrap: wrap;
@@ -412,7 +404,7 @@
 
         .mes-selector {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 20px;
             flex-wrap: wrap;
             align-items: center;
@@ -424,13 +416,14 @@
             border: 2px solid #4CAF50;
             border-radius: 8px;
             font-weight: bold;
-            font-size: 1em;
+            font-size: clamp(0.9em, 3.5vw, 1em);
             background: white;
-            min-width: 200px;
+            flex: 1;
+            min-width: 150px;
         }
 
         .auto-save-status {
-            font-size: 0.9em;
+            font-size: clamp(0.8em, 3vw, 0.9em);
             color: #666;
             text-align: center;
             margin-top: 15px;
@@ -442,7 +435,6 @@
 
         .auto-save-status.saving {
             color: #2196F3;
-            font-weight: bold;
             background: #e3f2fd;
         }
 
@@ -456,81 +448,59 @@
             background: #ffebee;
         }
 
-        /* Mejoras específicas para móviles */
-        .mobile-optimized {
-            /* Clase para elementos optimizados */
-        }
-
-        .touch-friendly {
-            min-height: 44px;
-            min-width: 44px;
-        }
-
-        /* Scroll mejorado para iOS */
-        .debitos-list, .gastos-list {
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Mejoras para pantallas muy pequeñas */
-        @media (max-width: 480px) {
-            body {
-                padding: 5px;
-                padding-bottom: 15px;
-            }
-            
+        /* MEDIA QUERIES MEJORADAS */
+        @media (max-width: 768px) {
             .container {
                 padding: 12px;
                 border-radius: 12px;
             }
             
-            .header {
-                padding: 15px 12px;
-                border-radius: 10px;
-            }
-            
-            .header h1 {
-                font-size: 1.5em;
-            }
-            
-            .total-amount {
-                font-size: 2em;
-            }
-            
             .section {
                 padding: 15px;
-                border-radius: 10px;
+                margin-bottom: 15px;
+            }
+            
+            .btn-group {
+                flex-direction: column;
             }
             
             .btn {
-                padding: 12px 16px;
-                font-size: 0.95em;
-                min-height: 44px;
-            }
-            
-            .cuentas-grid {
-                grid-template-columns: 1fr;
-                gap: 10px;
+                width: 100%;
+                margin: 3px 0;
             }
             
             .gasto-header {
                 flex-direction: column;
-                align-items: flex-start;
             }
             
             .gasto-actions {
                 width: 100%;
                 justify-content: space-between;
             }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
             
-            .status-badge {
-                min-width: 90px;
-                padding: 10px 12px;
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 15px 10px;
+            }
+            
+            .cuentas-grid {
+                grid-template-columns: 1fr;
             }
             
             .modal-content {
-                padding: 20px;
-                margin: 10px;
-                border-radius: 12px;
+                width: 100%;
+                margin: 10px auto;
+                border-radius: 10px;
+                padding: 15px;
             }
             
             .mes-selector {
@@ -540,75 +510,30 @@
             
             .mes-selector select {
                 min-width: auto;
-                width: 100%;
             }
         }
 
         @media (max-width: 360px) {
-            .header h1 {
-                font-size: 1.3em;
+            .status-badge {
+                min-width: 70px;
+                padding: 6px 8px;
             }
             
-            .total-amount {
-                font-size: 1.8em;
-            }
-            
-            .btn {
-                font-size: 0.9em;
-                padding: 10px 14px;
-            }
-            
-            .cuenta-card {
-                padding: 12px;
-            }
-            
-            .cuenta-saldo {
-                font-size: 1.4em;
-            }
-            
-            .gasto-item {
-                padding: 12px;
-            }
-            
-            .gasto-monto {
-                font-size: 1.2em;
+            .gasto-actions {
+                gap: 4px;
             }
         }
 
-        /* Soporte para modo oscuro */
-        @media (prefers-color-scheme: dark) {
-            .section {
-                background: #2d2d2d;
-                border-color: #444;
-            }
-            
-            .section h2 {
-                color: #fff;
-            }
-            
-            .cuenta-card, .gasto-item, .debito-item {
-                background: #363636;
-                color: #fff;
-            }
-            
-            .gasto-nombre, .debito-descripcion {
-                color: #fff;
-            }
+        /* PREVENIR PROBLEMAS COMUNES EN MÓVIL */
+        input, select, textarea {
+            font-size: 16px !important; /* Previene zoom en iOS */
         }
 
-        /* Prevenir zoom en inputs en iOS */
-        @media screen and (max-width: 768px) {
-            input, select, textarea {
-                font-size: 16px !important;
-            }
-        }
-
-        /* Mejoras de accesibilidad */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
+        /* Safe areas para iPhone X+ */
+        @supports(padding: max(0px)) {
+            body {
+                padding-left: max(10px, env(safe-area-inset-left));
+                padding-right: max(10px, env(safe-area-inset-right));
             }
         }
     </style>
@@ -623,7 +548,6 @@
             </div>
         </div>
 
-        <!-- SECCIÓN CUENTAS -->
         <div class="section">
             <h2>MIS CUENTAS</h2>
             <div class="cuentas-grid" id="cuentasGrid"></div>
@@ -633,10 +557,9 @@
             </div>
         </div>
 
-        <!-- SECCIÓN GASTOS RECURRENTES -->
         <div class="section">
             <div class="mes-selector">
-                <label style="font-weight: bold; font-size: 1.1em;">MES:</label>
+                <label style="font-weight: bold;">MES:</label>
                 <select id="mesSelectorGastos" onchange="cambiarMes()"></select>
             </div>
             <h2>
@@ -650,27 +573,24 @@
             </div>
         </div>
 
-        <!-- SECCIÓN DÉBITOS Y MOVIMIENTOS -->
         <div class="section">
             <h2>DÉBITOS Y MOVIMIENTOS</h2>
             <button class="btn btn-primary" onclick="registrarDebito()" style="margin-bottom: 15px;">+ REGISTRAR DÉBITO</button>
             <div class="debitos-list" id="debitosList"></div>
         </div>
 
-        <!-- BACKUP Y EXPORTACIÓN -->
         <div class="section">
             <h2>RESPALDO Y EXPORTACIÓN</h2>
-            <p style="font-size: 1em; color: #666; margin-bottom: 15px; text-align: center;">Los datos se guardan automáticamente en tu navegador</p>
+            <p style="text-align: center; color: #666; margin-bottom: 15px;">Los datos se guardan automáticamente</p>
             <div class="btn-group">
-                <button class="btn btn-export" onclick="exportarCSV()">📊 EXPORTAR CSV</button>
-                <button class="btn btn-secondary" onclick="importarCSV()">📥 IMPORTAR CSV</button>
-                <button class="btn btn-danger" onclick="limpiarTodo()">🗑️ LIMPIAR TODO</button>
+                <button class="btn btn-export" onclick="exportarCSV()">EXPORTAR CSV</button>
+                <button class="btn btn-secondary" onclick="importarCSV()">IMPORTAR CSV</button>
+                <button class="btn btn-danger" onclick="limpiarTodo()">LIMPIAR TODO</button>
             </div>
             <div class="auto-save-status" id="autoSaveStatus">Estado: Guardado</div>
         </div>
     </div>
 
-    <!-- MODAL UNIVERSAL -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -681,12 +601,10 @@
         </div>
     </div>
 
-    <!-- INPUT OCULTO PARA IMPORTAR CSV -->
     <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
 
     <script>
-        // El JavaScript permanece igual que en la versión anterior
-        // Solo se mejoró el CSS para móviles
+        // DATOS Y ESTADO
         let datos = {
             cuentas: {},
             gastosPorMes: {},
@@ -696,7 +614,9 @@
         let mesActual = '';
         let autoSaveTimeout = null;
 
+        // INICIALIZACIÓN
         function iniciar() {
+            console.log('Iniciando aplicación...');
             cargarDatos();
             inicializarMes();
             generarSelectorMeses();
@@ -706,13 +626,577 @@
             calcularTotal();
             calcularTotalGastos();
             
-            configurarAutoGuardado();
-            mostrarEstadoGuardado('Cargado');
+            // Forzar un redibujado
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+            
+            console.log('Aplicación iniciada correctamente');
         }
 
-        // ... (el resto del JavaScript se mantiene igual)
-        // Solo copia todo el código JavaScript de la versión anterior aquí
+        function inicializarMes() {
+            const hoy = new Date();
+            mesActual = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`;
+            
+            if (!datos.gastosPorMes[mesActual]) {
+                datos.gastosPorMes[mesActual] = {};
+            }
+            guardarDatos();
+        }
 
+        function generarSelectorMeses() {
+            const selector = document.getElementById('mesSelectorGastos');
+            if (!selector) {
+                console.error('No se encontró el selector de meses');
+                return;
+            }
+            
+            selector.innerHTML = '';
+            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                          'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            
+            const hoy = new Date();
+            for (let i = -6; i <= 6; i++) {
+                const fecha = new Date(hoy.getFullYear(), hoy.getMonth() + i, 1);
+                const mesKey = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}`;
+                const mesNombre = `${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
+                
+                const option = document.createElement('option');
+                option.value = mesKey;
+                option.textContent = mesNombre;
+                
+                if (mesKey === mesActual) {
+                    option.selected = true;
+                }
+                
+                selector.appendChild(option);
+            }
+        }
+
+        function cambiarMes() {
+            const selector = document.getElementById('mesSelectorGastos');
+            mesActual = selector.value;
+            
+            if (!datos.gastosPorMes[mesActual]) {
+                datos.gastosPorMes[mesActual] = {};
+            }
+            
+            actualizarGastos();
+        }
+
+        // ALMACENAMIENTO
+        function cargarDatos() {
+            try {
+                const guardado = localStorage.getItem('finanzas_datos');
+                if (guardado) {
+                    datos = JSON.parse(guardado);
+                    if (!datos.gastosPorMes) datos.gastosPorMes = {};
+                    if (!datos.cuentas) datos.cuentas = {};
+                    if (!datos.debitos) datos.debitos = [];
+                }
+            } catch (error) {
+                console.error('Error al cargar datos:', error);
+            }
+        }
+
+        function guardarDatos() {
+            try {
+                localStorage.setItem('finanzas_datos', JSON.stringify(datos));
+                return true;
+            } catch (error) {
+                console.error('Error al guardar:', error);
+                return false;
+            }
+        }
+
+        // CUENTAS
+        function calcularTotal() {
+            const total = Object.values(datos.cuentas).reduce((sum, val) => sum + val, 0);
+            const elemento = document.getElementById('totalAmount');
+            if (elemento) {
+                elemento.textContent = `$${total.toFixed(2)}`;
+            }
+        }
+
+        function actualizarCuentas() {
+            const grid = document.getElementById('cuentasGrid');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+
+            Object.keys(datos.cuentas).forEach(nombre => {
+                const card = document.createElement('div');
+                card.className = 'cuenta-card';
+                card.innerHTML = `
+                    <button class="btn-delete-cuenta" onclick="eliminarCuenta('${nombre}')">X</button>
+                    <h3>${nombre}</h3>
+                    <div class="cuenta-saldo">$${datos.cuentas[nombre].toFixed(2)}</div>
+                `;
+                grid.appendChild(card);
+            });
+
+            calcularTotal();
+        }
+
+        function agregarCuenta() {
+            mostrarModal(`
+                <div class="form-group">
+                    <label>Nombre de la Cuenta:</label>
+                    <input type="text" id="nombreCuenta" placeholder="Ej: MERCANTIL">
+                </div>
+                <div class="form-group">
+                    <label>Saldo Inicial:</label>
+                    <input type="number" id="saldoCuenta" step="0.01" value="0">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="guardarCuenta()">GUARDAR</button>
+                    <button class="btn btn-danger" onclick="cerrarModal()">CANCELAR</button>
+                </div>
+            `, 'Agregar Cuenta');
+        }
+
+        function guardarCuenta() {
+            const nombre = document.getElementById('nombreCuenta').value.trim().toUpperCase();
+            const saldo = parseFloat(document.getElementById('saldoCuenta').value) || 0;
+
+            if (nombre) {
+                datos.cuentas[nombre] = saldo;
+                guardarDatos();
+                actualizarCuentas();
+                cerrarModal();
+            } else {
+                alert('Ingresa un nombre para la cuenta');
+            }
+        }
+
+        function editarSaldoCuenta() {
+            if (Object.keys(datos.cuentas).length === 0) {
+                alert('No hay cuentas para editar');
+                return;
+            }
+
+            let html = '<div class="form-group"><label>Selecciona la cuenta:</label><select id="cuentaEditar">';
+            Object.keys(datos.cuentas).forEach(nombre => {
+                html += `<option value="${nombre}">${nombre} - $${datos.cuentas[nombre].toFixed(2)}</option>`;
+            });
+            html += `</select></div>
+                <div class="form-group">
+                    <label>Nuevo Saldo:</label>
+                    <input type="number" id="nuevoSaldo" step="0.01" placeholder="Nuevo saldo">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="guardarSaldoEditado()">ACTUALIZAR</button>
+                    <button class="btn btn-danger" onclick="cerrarModal()">CANCELAR</button>
+                </div>`;
+            
+            mostrarModal(html, 'Editar Saldo');
+        }
+
+        function guardarSaldoEditado() {
+            const cuenta = document.getElementById('cuentaEditar').value;
+            const nuevoSaldo = parseFloat(document.getElementById('nuevoSaldo').value);
+
+            if (!cuenta) {
+                alert('Selecciona una cuenta');
+                return;
+            }
+
+            if (isNaN(nuevoSaldo) || nuevoSaldo < 0) {
+                alert('Ingresa un monto válido');
+                return;
+            }
+
+            datos.cuentas[cuenta] = nuevoSaldo;
+            guardarDatos();
+            actualizarCuentas();
+            cerrarModal();
+        }
+
+        function eliminarCuenta(nombre) {
+            if (confirm(`¿Eliminar cuenta ${nombre}?`)) {
+                delete datos.cuentas[nombre];
+                guardarDatos();
+                actualizarCuentas();
+            }
+        }
+
+        // GASTOS
+        function calcularTotalGastos() {
+            const gastosMes = datos.gastosPorMes[mesActual] || {};
+            const total = Object.values(gastosMes).reduce((sum, gasto) => sum + gasto.monto, 0);
+            const elemento = document.getElementById('totalGastos');
+            if (elemento) {
+                elemento.textContent = `$${total.toFixed(2)}`;
+            }
+        }
+
+        function actualizarGastos() {
+            const list = document.getElementById('gastosList');
+            if (!list) return;
+
+            list.innerHTML = '';
+            const gastosMes = datos.gastosPorMes[mesActual] || {};
+
+            if (Object.keys(gastosMes).length === 0) {
+                list.innerHTML = '<p style="color: #666; text-align: center;">No hay gastos este mes</p>';
+                calcularTotalGastos();
+                return;
+            }
+
+            Object.keys(gastosMes).forEach(nombre => {
+                const gasto = gastosMes[nombre];
+                const item = document.createElement('div');
+                item.className = `gasto-item ${gasto.pagado ? 'pagado' : ''}`;
+                
+                let cuentaInfo = '';
+                if (gasto.pagado && gasto.cuenta) {
+                    cuentaInfo = `<div class="gasto-cuenta">Pagado desde: ${gasto.cuenta}</div>`;
+                }
+                
+                item.innerHTML = `
+                    <div class="gasto-header">
+                        <div class="gasto-info">
+                            <div class="gasto-nombre">${nombre}</div>
+                            <div class="gasto-monto">$${gasto.monto.toFixed(2)}</div>
+                            ${cuentaInfo}
+                        </div>
+                        <div class="gasto-actions">
+                            <span class="status-badge ${gasto.pagado ? 'status-pagado-badge' : 'status-pendiente'}" 
+                                  onclick="togglePagado('${nombre}')">
+                                ${gasto.pagado ? 'PAGADO' : 'PENDIENTE'}
+                            </span>
+                            <button class="btn btn-secondary" onclick="editarGasto('${nombre}')">EDITAR</button>
+                            <button class="btn btn-danger" onclick="eliminarGasto('${nombre}')">X</button>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+
+            calcularTotalGastos();
+        }
+
+        function agregarGasto() {
+            mostrarModal(`
+                <div class="form-group">
+                    <label>Nombre del Gasto:</label>
+                    <input type="text" id="nombreGasto" placeholder="Ej: LUZ">
+                </div>
+                <div class="form-group">
+                    <label>Monto:</label>
+                    <input type="number" id="montoGasto" step="0.01" placeholder="0.00">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="guardarGasto()">GUARDAR</button>
+                    <button class="btn btn-danger" onclick="cerrarModal()">CANCELAR</button>
+                </div>
+            `, 'Agregar Gasto');
+        }
+
+        function guardarGasto() {
+            const nombre = document.getElementById('nombreGasto').value.trim().toUpperCase();
+            const monto = parseFloat(document.getElementById('montoGasto').value) || 0;
+
+            if (nombre && monto > 0) {
+                if (!datos.gastosPorMes[mesActual]) {
+                    datos.gastosPorMes[mesActual] = {};
+                }
+                
+                datos.gastosPorMes[mesActual][nombre] = { monto: monto, pagado: false, cuenta: null };
+                guardarDatos();
+                actualizarGastos();
+                cerrarModal();
+            } else {
+                alert('Ingresa nombre y monto válidos');
+            }
+        }
+
+        function editarGasto(nombre) {
+            const gasto = datos.gastosPorMes[mesActual][nombre];
+            mostrarModal(`
+                <div class="form-group">
+                    <label>Nuevo Monto:</label>
+                    <input type="number" id="nuevoMontoGasto" step="0.01" value="${gasto.monto}">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="guardarEdicionGasto('${nombre}')">GUARDAR</button>
+                    <button class="btn btn-danger" onclick="cerrarModal()">CANCELAR</button>
+                </div>
+            `, `Editar: ${nombre}`);
+        }
+
+        function guardarEdicionGasto(nombre) {
+            const nuevoMonto = parseFloat(document.getElementById('nuevoMontoGasto').value);
+            if (!isNaN(nuevoMonto) && nuevoMonto > 0) {
+                datos.gastosPorMes[mesActual][nombre].monto = nuevoMonto;
+                guardarDatos();
+                actualizarGastos();
+                cerrarModal();
+            }
+        }
+
+        function togglePagado(nombre) {
+            const gasto = datos.gastosPorMes[mesActual][nombre];
+            
+            if (!gasto.pagado) {
+                if (Object.keys(datos.cuentas).length === 0) {
+                    alert('Primero agrega una cuenta');
+                    return;
+                }
+                
+                let html = '<div class="form-group"><label>¿De qué cuenta se pagará?</label><select id="cuentaPago">';
+                Object.keys(datos.cuentas).forEach(nombreCuenta => {
+                    html += `<option value="${nombreCuenta}">${nombreCuenta} - $${datos.cuentas[nombreCuenta].toFixed(2)}</option>`;
+                });
+                html += `</select></div>
+                    <p style="margin: 15px 0; font-weight: bold;">Monto: $${gasto.monto.toFixed(2)}</p>
+                    <div class="modal-actions">
+                        <button class="btn btn-primary" onclick="confirmarPagado('${nombre}')">PAGAR</button>
+                        <button class="btn btn-danger" onclick="cerrarModal()">CANCELAR</button>
+                    </div>`;
+                
+                mostrarModal(html, `Pagar: ${nombre}`);
+            } else {
+                if (confirm(`¿Marcar como PENDIENTE y devolver $${gasto.monto.toFixed(2)}?`)) {
+                    if (gasto.cuenta && datos.cuentas[gasto.cuenta] !== undefined) {
+                        datos.cuentas[gasto.cuenta] += gasto.monto;
+                    }
+                    gasto.pagado = false;
+                    gasto.cuenta = null;
+                    guardarDatos();
+                    actualizarCuentas();
+                    actualizarGastos();
+                }
+            }
+        }
+
+        function confirmarPagado(nombre) {
+            const cuenta = document.getElementById('cuentaPago').value;
+            const gasto = datos.gastosPorMes[mesActual][nombre];
+            
+            if (datos.cuentas[cuenta] >= gasto.monto) {
+                datos.cuentas[cuenta] -= gasto.monto;
+                gasto.pagado = true;
+                gasto.cuenta = cuenta;
+                
+                // Registrar en historial
+                const fecha = new Date().toLocaleString('es-PA');
+                datos.debitos.unshift({ 
+                    fecha, 
+                    cuenta, 
+                    descripcion: `PAGO: ${nombre}`, 
+                    monto: gasto.monto,
+                    tipo: 'pago'
+                });
+                
+                guardarDatos();
+                actualizarCuentas();
+                actualizarGastos();
+                actualizarDebitos();
+                cerrarModal();
+            } else {
+                alert('Saldo insuficiente');
+            }
+        }
+
+        function eliminarGasto(nombre) {
+            if (confirm(`¿Eliminar gasto ${nombre}?`)) {
+                delete datos.gastosPorMes[mesActual][nombre];
+                guardarDatos();
+                actualizarGastos();
+            }
+        }
+
+        function resetearMes() {
+            if (confirm('¿Resetear todos los gastos a PENDIENTE?')) {
+                const gastosMes = datos.gastosPorMes[mesActual] || {};
+                let dineroDevuelto = 0;
+                
+                Object.keys(gastosMes).forEach(nombre => {
+                    const gasto = gastosMes[nombre];
+                    if (gasto.pagado && gasto.cuenta && datos.cuentas[gasto.cuenta] !== undefined) {
+                        datos.cuentas[gasto.cuenta] += gasto.monto;
+                        dineroDevuelto += gasto.monto;
+                    }
+                    gasto.pagado = false;
+                    gasto.cuenta = null;
+                });
+                
+                guardarDatos();
+                actualizarCuentas();
+                actualizarGastos();
+                
+                if (dineroDevuelto > 0) {
+                    alert(`Se devolvió $${dineroDevuelto.toFixed(2)}`);
+                }
+            }
+        }
+
+        // DÉBITOS
+        function registrarDebito() {
+            if (Object.keys(datos.cuentas).length === 0) {
+                alert('Primero agrega una cuenta');
+                return;
+            }
+
+            let html = '<div class="form-group"><label>Cuenta:</label><select id="cuentaDebito">';
+            Object.keys(datos.cuentas).forEach(nombre => {
+                html += `<option value="${nombre}">${nombre}</option>`;
+            });
+            html += `</select></div>
+                <div class="form-group">
+                    <label>Descripción:</label>
+                    <input type="text" id="descripcionDebito" placeholder="Ej: Compra supermercado">
+                </div>
+                <div class="form-group">
+                    <label>Monto:</label>
+                    <input type="number" id="montoDebito" step="0.01" placeholder="0.00">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="guardarDebito()">GUARDAR</button>
+                    <button class="btn btn-danger" onclick="cerrarModal()">CANCELAR</button>
+                </div>`;
+            
+            mostrarModal(html, 'Registrar Débito');
+        }
+
+        function guardarDebito() {
+            const cuenta = document.getElementById('cuentaDebito').value;
+            const descripcion = document.getElementById('descripcionDebito').value.trim();
+            const monto = parseFloat(document.getElementById('montoDebito').value) || 0;
+
+            if (descripcion && monto > 0) {
+                if (datos.cuentas[cuenta] < monto) {
+                    alert('Saldo insuficiente');
+                    return;
+                }
+
+                const fecha = new Date().toLocaleString('es-PA');
+                datos.debitos.unshift({ 
+                    fecha, 
+                    cuenta, 
+                    descripcion, 
+                    monto,
+                    tipo: 'debito'
+                });
+                datos.cuentas[cuenta] -= monto;
+                
+                guardarDatos();
+                actualizarCuentas();
+                actualizarDebitos();
+                cerrarModal();
+            } else {
+                alert('Completa todos los campos');
+            }
+        }
+
+        function actualizarDebitos() {
+            const list = document.getElementById('debitosList');
+            if (!list) return;
+
+            list.innerHTML = '';
+
+            if (datos.debitos.length === 0) {
+                list.innerHTML = '<p style="color: #666; text-align: center;">No hay movimientos</p>';
+                return;
+            }
+
+            datos.debitos.forEach(debito => {
+                const item = document.createElement('div');
+                item.className = `debito-item ${debito.tipo === 'pago' ? 'pago' : ''}`;
+                item.innerHTML = `
+                    <div class="debito-info">
+                        <div class="debito-fecha">${debito.fecha} - ${debito.cuenta}</div>
+                        <div class="debito-descripcion">${debito.descripcion}</div>
+                    </div>
+                    <div class="debito-monto ${debito.tipo === 'pago' ? 'pago' : ''}">
+                        -$${debito.monto.toFixed(2)}
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // EXPORTACIÓN
+        function exportarCSV() {
+            try {
+                let csvContent = "data:text/csv;charset=utf-8,Tipo,Fecha,Cuenta,Descripción,Monto,Mes\n";
+                
+                datos.debitos.forEach(debito => {
+                    const tipo = debito.tipo === 'pago' ? 'PAGO' : 'DÉBITO';
+                    csvContent += `"${tipo}","${debito.fecha}","${debito.cuenta}","${debito.descripcion}",${debito.monto.toFixed(2)},""\n`;
+                });
+                
+                Object.keys(datos.gastosPorMes).forEach(mes => {
+                    const gastosMes = datos.gastosPorMes[mes];
+                    Object.keys(gastosMes).forEach(nombreGasto => {
+                        const gasto = gastosMes[nombreGasto];
+                        const estado = gasto.pagado ? 'PAGADO' : 'PENDIENTE';
+                        csvContent += `"GASTO","","${gasto.cuenta || ''}","${nombreGasto} - ${estado}",${gasto.monto.toFixed(2)},"${mes}"\n`;
+                    });
+                });
+                
+                Object.keys(datos.cuentas).forEach(nombreCuenta => {
+                    csvContent += `"CUENTA","","${nombreCuenta}","SALDO",${datos.cuentas[nombreCuenta].toFixed(2)},""\n`;
+                });
+                
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `finanzas_${new Date().toISOString().split('T')[0]}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                alert('CSV exportado correctamente');
+            } catch (error) {
+                alert('Error al exportar');
+            }
+        }
+
+        function importarCSV() {
+            document.getElementById('csvFileInput').click();
+        }
+
+        // UTILIDADES
+        function mostrarModal(contenido, titulo) {
+            document.getElementById('modalTitle').textContent = titulo;
+            document.getElementById('modalBody').innerHTML = contenido;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function limpiarTodo() {
+            if (confirm('¿ELIMINAR TODOS LOS DATOS?')) {
+                if (confirm('¿ESTÁS SEGURO? Se borrará todo.')) {
+                    datos = { cuentas: {}, gastosPorMes: {}, debitos: [] };
+                    localStorage.removeItem('finanzas_datos');
+                    location.reload();
+                }
+            }
+        }
+
+        // EVENT LISTENERS
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                cerrarModal();
+            }
+        };
+
+        // INICIAR
+        window.addEventListener('load', iniciar);
+        document.addEventListener('DOMContentLoaded', iniciar);
+
+        // Fallback si todo falla
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', iniciar);
+        } else {
+            iniciar();
+        }
     </script>
 </body>
 </html>
